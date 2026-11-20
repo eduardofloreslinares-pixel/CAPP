@@ -9,23 +9,22 @@ permissions:
 jobs:
   build:
     runs-on: macos-26
-    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Generar proyecto Xcode
         run: |
-          if ! command -v xcodegen >/dev/null; then brew install xcodegen; fi
-                if [ ! -f project.yml ]; then
+          if [ ! -f project.yml ]; then
             unzip -oq Congreso-Virtual-iOS.zip -x '.github/*'
-          fi  
+          fi
+          if ! command -v xcodegen >/dev/null; then
+            brew install xcodegen
+          fi
           xcodegen generate
 
       - name: Compilar para iPhone
-        run: |
-          xcodebuild -version
-          xcodebuild -project Congreso.xcodeproj -scheme Congreso -configuration Release -destination 'generic/platform=iOS' -derivedData .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+        run: xcodebuild -project Congreso.xcodeproj -scheme Congreso -configuration Release -destination 'generic/platform=iOS' -derivedDataPath .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
 
       - name: Empaquetar IPA
         run: |
@@ -33,10 +32,8 @@ jobs:
           ditto .build/Build/Products/Release-iphoneos/Congreso.app dist/Payload/Congreso.app
           cd dist
           zip -qr Congreso-Virtual.ipa Payload
-          unzip -tq Congreso-Virtual.ipa
 
       - uses: actions/upload-artifact@v4
         with:
           name: Congreso-Virtual-IPA
           path: dist/Congreso-Virtual.ipa
-          if-no-files-found: error
