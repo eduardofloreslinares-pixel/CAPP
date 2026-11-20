@@ -17,6 +17,9 @@ jobs:
       - name: Generar proyecto Xcode
         run: |
           if ! command -v xcodegen >/dev/null; then brew install xcodegen; fi
+                if [ ! -f project.yml ]; then
+            unzip -oq Congreso-Virtual-iOS.zip -x '.github/*'
+          fi  
           xcodegen generate
 
       - name: Compilar para iPhone
