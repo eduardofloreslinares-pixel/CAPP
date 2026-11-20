@@ -24,9 +24,8 @@ jobs:
 
       - name: Compilar para iPhone
         run: |
-          xcodebuild -project Congreso.xcodeproj -scheme Congreso -configuration Release \
-            -destination 'generic/platform=iOS' -derivedData .build \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+          xcodebuild -version
+          xcodebuild -project Congreso.xcodeproj -scheme Congreso -configuration Release -destination 'generic/platform=iOS' -derivedData .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
 
       - name: Empaquetar IPA
         run: |
